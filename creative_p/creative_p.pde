@@ -1,7 +1,7 @@
 int screen = 1;
 int screen1width = 398;
 int screen1height = 398;
-int distanceC = 0;
+int distanceC = #323536;
 int timeC = 255;
 int km1 = 0;
 int km2 = 0;
@@ -30,6 +30,18 @@ int cadence;
 int speed;
 int paceMin;
 int paceSec;
+int contactC = #6BA7CC;
+int cadenceC = #6BA7CC;
+int paceC = #6BA7CC;
+int currentFeedback = 134;
+int countDown = 5;
+float distanceR = 214;
+float distanceG = 223;
+float distanceB = 189;
+float timeR = 255;
+float timeGB = 255;
+char or = ' ';
+float time;
 
 void setup() {
   size(400, 700);
@@ -40,17 +52,21 @@ void setup() {
   cadence = int(random(150, 200));
   paceMin = int(random(5,15));
   paceSec = int(random(10,60));
+  time = random(10);
 }
 
 void draw() {
-  background(#7FB3D5);
-  fill(#2980B9);
+  background(255);
+  fill(#AEDBF0);
   rect(1, 460, 398, 199);
   inputControls();
   feedbackControls();
   if (screen == 1) {
     screen1();
-  } else {
+  } else if(screen == 2){
+    screen3();
+    
+  } else if(screen == 3){
     screen2();
     textSize(55);
     fill(feedbackC);
@@ -59,7 +75,7 @@ void draw() {
 }
 
 void screen1() {
-  fill(#1A5276);
+  fill(#3F7EB3);
   rect(1, 1, screen1width, screen1height);
   fill(distanceC);
   textSize(55);
@@ -67,24 +83,24 @@ void screen1() {
   fill(255);
   text(km1, 60, 175);
   text(km2, 100, 175);
-  fill(0);
+  fill(#97A5A8);
   text("km", 160, 175);
   fill(255);
   text(m1, 220, 175);
   text(m2, 260, 175);
   text(m3, 300, 175);
-  fill(0);
+  fill(#97A5A8);
   text("m", 345, 175);
 
   fill(255);
   text(min1, 75, 320);
   text(min2, 115, 320);
-  fill(0);
+  fill(#97A5A8);
   text(":", 145, 315);
   fill(255);
   text(sec1, 175, 320);
   text(sec2, 215, 320);
-  fill(0);
+  fill(#97A5A8);
   text(".", 245, 320);
   fill(255);
   text(ms1, 275, 320);
@@ -100,40 +116,72 @@ void screen1() {
 void mouseClicked() {
   if (screen == 1) {
     input();
-  } else {
-    feedback();
+  } else if(screen == 3){
+    controlFeedback();
   }
 }
 
 void screen2() {
-  fill(0);
+  fill(#AEDBF0);
   stroke(255);
   rect(1, 1, screen1width/2 - 0.5, screen1height);
+  String timeFeedback = or + str(time);
   rect(screen1width/2 + 1, 1, screen1width/2, screen1height);
   screen2Distance();
   screen2Time();
+  feedback();
+  textSize(25);
+  fill(255);
+  if(i<0)text(timeFeedback, 300, j+30);
 }
 
 void screen2Distance() {
-  fill(#1F618D);
-  if (i-speedDistance<speedDistance)fill(#196F3D);
+  fill(distanceR, distanceG, distanceB);
   rect(1, i, screen1width/2 - 0.5, 398 - i);
-  if (i>0)i-=speedDistance;
+  if(i>0 && j<=0){
+    or ='+';
+  }
+  if (i>0){ 
+    i-=speedDistance;
+    distanceR -= speedDistance/3;
+    distanceB -= speedDistance/3;
+  }
 }
 
 void screen2Time() {
   fill(#1F618D);
-  if (j-speedTime<speedTime && i-speedDistance>speedDistance*5)timeOver = true;
-  if (timeOver) fill(#A93226);
+  if (j-speedTime<speedTime && i-speedDistance>speedDistance*5)timeGB -= speedTime / 10;
+  fill(timeR, timeGB, timeGB);
+  if(i<=0 && j>0){
+    fill(#45771E);
+    or ='-';
+  }
   rect(screen1width/2 + 1, j, screen1width/2 - 0.5, 398 - j);
   if (i>speedDistance) {
     if (j>0)j-=speedTime;
+    timeGB -= speedTime / 3;
   }
+}
+
+void screen3(){
+  fill(#3F7EB3);
+  rect(1, 1, screen1width, screen1height);
+  countDown();
+  if(countDown == 0)screen = 3;
+
+}
+
+void countDown(){
+  textSize(230);
+  fill(255);
+  text(countDown, 200, 280);
+  countDown --;
+  delay(1000);
 }
 
 
 void input() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     if (mouseY >= 660) {
       if (mouseX>=240 && mouseX<=318) {
         if (disX1 >= 85) {
@@ -151,7 +199,7 @@ void input() {
         save();
       }
     }
-  } else if (distanceC == 255 && timeC == 0) {
+  } else if (distanceC == 255 && timeC == #323536) {
     if (mouseY >= 660) {
       if (mouseX>=240 && mouseX<=318) {
         lineToLeft();
@@ -169,9 +217,9 @@ void input() {
 }
 
 void save() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     distanceC = 255;
-    timeC = 0;
+    timeC = #323536;
     disX1 = 0;
     disX2 = 0;
     timeX1 = 100;
@@ -184,7 +232,7 @@ void save() {
 }
 
 void increase() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     if (disX1 == 45) {
       if (km1 < 9) {
         km1++;
@@ -206,7 +254,7 @@ void increase() {
         m3++;
       }
     }
-  } else if (distanceC == 255 && timeC == 0) {
+  } else if (distanceC == 255 && timeC == #323536) {
     if (timeX1 == 60) {
       if (min1 < 9) {
         min1++;
@@ -236,7 +284,7 @@ void increase() {
 }
 
 void decrease() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     if (disX1 == 45) {
       if (km1 > 0) {
         km1--;
@@ -258,7 +306,7 @@ void decrease() {
         m3--;
       }
     }
-  } else if (distanceC == 255 && timeC == 0) {
+  } else if (distanceC == 255 && timeC == #323536) {
     if (timeX1 == 60) {
       if (min1 > 0) {
         min1--;
@@ -288,7 +336,7 @@ void decrease() {
 }
 
 void lineToLeft() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     if (disX1 == 85) {
       disX1 = 45;
       disX2 = 75;
@@ -302,7 +350,7 @@ void lineToLeft() {
       disX1 = 245;
       disX2 = 275;
     }
-  } else if (distanceC == 255 && timeC == 0) {
+  } else if (distanceC == 255 && timeC == #323536) {
     if (timeX1 == 100) {
       timeX1 = 60;
       timeX2 = 90;
@@ -323,7 +371,7 @@ void lineToLeft() {
 }
 
 void lineToRight() {
-  if (distanceC == 0) {
+  if (distanceC == #323536) {
     if (disX1 == 45) {
       disX1 = 85;
       disX2 = 115;
@@ -337,7 +385,7 @@ void lineToRight() {
       disX1 = 285;
       disX2 = 315;
     }
-  } else if (distanceC == 255 && timeC == 0) {
+  } else if (distanceC == 255 && timeC == #323536) {
     if (timeX1 == 60) {
       timeX1 = 100;
       timeX2 = 130;
@@ -367,27 +415,27 @@ void colorTime() {
 }
 
 void feedbackControls() {
-  fill(#1F618D);
+  fill(contactC);
   rect(1, 400, 132, 59);
   fill(255);
   textSize(20);
   text("CONTACT", 66, 435);
-  fill(#1F618D);
+  fill(cadenceC);
   rect(134, 400, 132, 59);
   fill(255);
   textSize(20);
   text("CADENCE", 200, 435);
-  fill(#1F618D);
+  fill(paceC);
   rect(267, 400, 132, 59);
   fill(255);
   textSize(20);
-  text("SPEED", 333, 435);
+  text("PACE", 333, 435);
   fill(#1F618D);
 }
 
 void inputControls() { 
   fill(255);
-  stroke(0);
+  stroke(#323536);
   rect(1, 660, 79, 38);
   //up arrow
   line(20, 690, 39.5, 670);
@@ -397,7 +445,7 @@ void inputControls() {
   line(100, 670, 119.5, 690);
   line(139, 670, 119.5, 690);
   rect(160, 660, 79, 38);
-  fill(0);
+  fill(#323536);
   textSize(25);
   text("SAVE", 201, 688);
   fill(255);
@@ -412,22 +460,46 @@ void inputControls() {
   stroke(255);
 }
 
-void feedback() {
+void controlFeedback() {
   if (i<=0) {
-    if (mouseY>=400 && mouseY <=459) {
-      if (mouseX>=1 && mouseX<=132) {
-        if(contact<200) feedbackC = #196F3D;
-        else feedbackC = #A93226;
-        feedback = str(contact) + " ms";
-      } else if (mouseX>=134 && mouseX<=260) {
-        if(cadence<170) feedbackC = #196F3D;
-        else feedbackC = #A93226;
-        feedback = str(cadence) + " SPM";
-      } else if (mouseX>=267 && mouseX<=399) {
-        if(paceMin<7) feedbackC = #196F3D;
-        else feedbackC = #A93226;
-        feedback = str(paceMin) + ":" + str(paceSec) + "km/min";
+    
+    if (mouseY >= 660) {
+      if (mouseX>=240 && mouseX<=318) {
+        if(currentFeedback == 134){
+          currentFeedback = 1;
+          cadenceC = #6BA7CC;
+          contactC = #3F7EB3;
+          if(contact<200) feedbackC = #76CD31;
+          else feedbackC = #FF2222;
+          feedback = str(contact) + " MS";
+        } else if (currentFeedback == 267) {
+          currentFeedback = 134;
+          paceC = #6BA7CC;
+          feedback();
+        }
+      } else if (mouseX>=319 && mouseX<=398) {
+        if(currentFeedback == 1){
+          currentFeedback = 134;
+          contactC = #6BA7CC;
+          feedback();
+        } else if (currentFeedback == 134) {
+          currentFeedback = 267;
+          cadenceC = #6BA7CC;
+          paceC = #3F7EB3;
+         if(paceMin<7) feedbackC = #76CD31;
+         else feedbackC = #FF2222;
+         feedback = str(paceMin) + ":" + str(paceSec) + " KM/MIN";
+        }
       }
     }
+  }
+}
+       
+void feedback(){
+  if(i<=0 && currentFeedback == 134){
+    cadenceC = #3F7EB3;
+    if(cadence<170) feedbackC = #76CD31;
+    else feedbackC = #FF2222;
+    feedback = str(cadence) + " SPM";
   }
 }
